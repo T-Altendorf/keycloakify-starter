@@ -3,7 +3,88 @@ If you use global CSS like we do here(not recommended)
 Be mindful that the CSS of the login theme may clash with the CSS of the account theme in Storybook (and only in storybook).
 This is why I made sure to use .my-root-account-class instead of .my-root-class that is already used in the login theme.
 */
+body {
+  overflow-x: hidden;
+}
 
-.my-root-account-class {
-	background: url(./assets/background.svg) no-repeat center center fixed;
+.list-group-item {
+  background-color: none; /* light background */
+  border-radius: 10px !important; /* rounded corners */
+  border: none;
+  margin-bottom: 5px; /* space between items */
+  i {
+    width: 20px; /* icon width */
+    margin-right: 5px; /* space between icon and text */
+  }
+}
+
+a {
+  color: #212529; /* dark text */
+  text-decoration: none; /* remove underline */
+}
+
+.list-group-item.active {
+  color: #212529; /* dark text */
+  background-color: #e9ecef; /* slightly darker background for active item */
+}
+
+@media (max-width: 768px) {
+  .list-group-wrapper {
+    overflow-x: scroll;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #c6c6c6 transparent; /* For Firefox */
+    margin-bottom: 20px;
+  }
+
+  .list-group-wrapper::-webkit-scrollbar {
+    /* For Chrome, Safari and Opera */
+    height: 10px;
+  }
+
+  .list-group-wrapper::-webkit-scrollbar-track {
+    /* For Chrome, Safari and Opera */
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .list-group-wrapper::-webkit-scrollbar-thumb {
+    /* For Chrome, Safari and Opera */
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .list-group {
+    display: flex;
+    flex-direction: row;
+    background-color: #e9ecef;
+  }
+  .list-group {
+    display: inline-flex;
+    flex-direction: row;
+    border-radius: 10px;
+    background-color: #e9ecef;
+  }
+  .list-group-item {
+    margin-bottom: 0; /* remove space between items on medium screens and below */
+    border-radius: 0; /* remove border radius from individual items */
+    background-color: transparent;
+    white-space: nowrap; /* prevent text from wrapping */
+  }
+  .list-group-item.active {
+    background-color: #c6c6c6; /* slightly darker background for active item */
+    border-radius: 0; /* remove border radius from active item */
+    border-radius: 10px;
+  }
+}
+
+button {
+  margin-top: 10px; /* space between buttons */
+}
+
+.form-group {
+  margin-bottom: 10px; /* space between form groups */
+}
+
+.content-area {
+  overflow-x: auto;
 }

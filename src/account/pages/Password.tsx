@@ -46,14 +46,14 @@ export default function LogoutConfirm(
           style={{ display: "none" }}
         />
         {password.passwordSet && (
-          <div className="form-group">
-            <div className="col-sm-2 col-md-2">
+          <div className="form-group row">
+            <div className="col-sm-3 col-md-3">
               <label htmlFor="password" className="control-label">
                 {msg("password")}
               </label>
             </div>
 
-            <div className="col-sm-10 col-md-10">
+            <div className="col-sm-9 col-md-9">
               <input
                 type="password"
                 className="form-control"
@@ -71,14 +71,14 @@ export default function LogoutConfirm(
           name="stateChecker"
           value={stateChecker}
         />
-        <div className="form-group">
-          <div className="col-sm-2 col-md-2">
+        <div className="form-group row">
+          <div className="col-sm-3 col-md-3">
             <label htmlFor="password-new" className="control-label">
               {msg("passwordNew")}
             </label>
           </div>
 
-          <div className="col-sm-10 col-md-10">
+          <div className="col-sm-9 col-md-9">
             <input
               type="password"
               className="form-control"
@@ -88,8 +88,8 @@ export default function LogoutConfirm(
             />
           </div>
         </div>
-        <div className="form-group">
-          <div className="col-sm-2 col-md-2">
+        <div className="form-group row">
+          <div className="col-sm-3 col-md-3">
             <label
               htmlFor="password-confirm"
               className="control-label two-lines"
@@ -98,7 +98,7 @@ export default function LogoutConfirm(
             </label>
           </div>
 
-          <div className="col-sm-10 col-md-10">
+          <div className="col-sm-9 col-md-9">
             <input
               type="password"
               className="form-control"

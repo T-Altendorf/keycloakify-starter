@@ -1,135 +1,157 @@
 // Copy pasted from: https://github.com/InseeFrLab/keycloakify/blob/main/src/login/Template.tsx
-
+import "./assets/fontawesome-free/css/all.css";
 import { clsx } from "keycloakify/tools/clsx";
 import { usePrepareTemplate } from "keycloakify/lib/usePrepareTemplate";
 import { type TemplateProps } from "keycloakify/account/TemplateProps";
 import { useGetClassName } from "keycloakify/account/lib/useGetClassName";
 import type { KcContext } from "./kcContext";
 import type { I18n } from "./i18n";
-import { assert } from "keycloakify/tools/assert";
+
+const localeFromURL = new URL(window.location.href).searchParams.get("locale");
 
 export default function Template(props: TemplateProps<KcContext, I18n>) {
-    const { kcContext, i18n, doUseDefaultCss, active, classes, children } = props;
+  const { kcContext, i18n, doUseDefaultCss, active, classes, children } = props;
 
-    const { getClassName } = useGetClassName({ doUseDefaultCss, classes });
+  const { getClassName } = useGetClassName({ doUseDefaultCss, classes });
 
-    const { msg, changeLocale, labelBySupportedLanguageTag, currentLanguageTag } = i18n;
+  const { msg, changeLocale } = i18n;
 
-    const { locale, url, features, realm, message, referrer } = kcContext;
+  const { url, features, realm, message } = kcContext;
 
-    const { isReady } = usePrepareTemplate({
-        "doFetchDefaultThemeResources": doUseDefaultCss,
-        "styles": [
-            `${url.resourcesCommonPath}/node_modules/patternfly/dist/css/patternfly.min.css`,
-            `${url.resourcesCommonPath}/node_modules/patternfly/dist/css/patternfly-additions.min.css`,
-            `${url.resourcesPath}/css/account.css`
-        ],
-        "htmlClassName": getClassName("kcHtmlClass"),
-        "bodyClassName": clsx("admin-console", "user", getClassName("kcBodyClass"))
-    });
+  const { isReady } = usePrepareTemplate({
+    doFetchDefaultThemeResources: false,
+    styles: [
+      `${url.resourcesCommonPath}/node_modules/patternfly/dist/css/patternfly.min.css`,
+      `${url.resourcesCommonPath}/node_modules/patternfly/dist/css/patternfly-additions.min.css`,
+      `${url.resourcesPath}/css/account.css`,
+    ],
+    htmlClassName: getClassName("kcHtmlClass"),
+    bodyClassName: clsx("admin-console", "user", getClassName("kcBodyClass")),
+  });
 
-    if (!isReady) {
-        return null;
-    }
+  if (!isReady) {
+    return null;
+  }
+  if (localeFromURL !== null) changeLocale(localeFromURL);
 
-    return (
-        <>
-            <header className="navbar navbar-default navbar-pf navbar-main header">
-                <nav className="navbar" role="navigation">
-                    <div className="navbar-header">
-                        <div className="container">
-                            <h1 className="navbar-title">Keycloak</h1>
-                        </div>
-                    </div>
-                    <div className="navbar-collapse navbar-collapse-1">
-                        <div className="container">
-                            <ul className="nav navbar-nav navbar-utility">
-                                {realm.internationalizationEnabled && (assert(locale !== undefined), true) && locale.supported.length > 1 && (
-                                    <li>
-                                        <div className="kc-dropdown" id="kc-locale-dropdown">
-                                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                                            <a href="#" id="kc-current-locale-link">
-                                                {labelBySupportedLanguageTag[currentLanguageTag]}
-                                            </a>
-                                            <ul>
-                                                {locale.supported.map(({ languageTag }) => (
-                                                    <li key={languageTag} className="kc-dropdown-item">
-                                                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                                                        <a href="#" onClick={() => changeLocale(languageTag)}>
-                                                            {labelBySupportedLanguageTag[languageTag]}
-                                                        </a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </li>
-                                )}
-                                {referrer?.url && (
-                                    <li>
-                                        <a href={referrer.url} id="referrer">
-                                            {msg("backTo", referrer.name)}
-                                        </a>
-                                    </li>
-                                )}
-                                <li>
-                                    <a href={url.getLogoutUrl()}>{msg("doSignOut")}</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </header>
-
-            <div className="container">
-                <div className="bs-sidebar col-sm-3">
-                    <ul>
-                        <li className={clsx(active === "account" && "active")}>
-                            <a href={url.accountUrl}>{msg("account")}</a>
-                        </li>
-                        {features.passwordUpdateSupported && (
-                            <li className={clsx(active === "password" && "active")}>
-                                <a href={url.passwordUrl}>{msg("password")}</a>
-                            </li>
-                        )}
-                        <li className={clsx(active === "totp" && "active")}>
-                            <a href={url.totpUrl}>{msg("authenticator")}</a>
-                        </li>
-                        {features.identityFederation && (
-                            <li className={clsx(active === "social" && "active")}>
-                                <a href={url.socialUrl}>{msg("federatedIdentity")}</a>
-                            </li>
-                        )}
-                        <li className={clsx(active === "sessions" && "active")}>
-                            <a href={url.sessionsUrl}>{msg("sessions")}</a>
-                        </li>
-                        <li className={clsx(active === "applications" && "active")}>
-                            <a href={url.applicationsUrl}>{msg("applications")}</a>
-                        </li>
-                        {features.log && (
-                            <li className={clsx(active === "log" && "active")}>
-                                <a href={url.logUrl}>{msg("log")}</a>
-                            </li>
-                        )}
-                        {realm.userManagedAccessAllowed && features.authorization && (
-                            <li className={clsx(active === "authorization" && "active")}>
-                                <a href={url.resourceUrl}>{msg("myResources")}</a>
-                            </li>
-                        )}
-                    </ul>
-                </div>
-
-                <div className="col-sm-9 content-area">
-                    {message !== undefined && (
-                        <div className={clsx("alert", `alert-${message.type}`)}>
-                            {message.type === "success" && <span className="pficon pficon-ok"></span>}
-                            {message.type === "error" && <span className="pficon pficon-error-circle-o"></span>}
-                            <span className="kc-feedback-text">{message.summary}</span>
-                        </div>
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="bs-sidebar col-md-3">
+            <div className="list-group-wrapper">
+              <ul className="list-group">
+                <a href={url.accountUrl}>
+                  <li
+                    className={clsx(
+                      "list-group-item",
+                      active === "account" && "active"
                     )}
-
-                    {children}
-                </div>
+                  >
+                    <i className="fas fa-user"> </i> {msg("account")}
+                  </li>
+                </a>
+                {features.passwordUpdateSupported && (
+                  <a href={url.passwordUrl}>
+                    <li
+                      className={clsx(
+                        "list-group-item",
+                        active === "password" && "active"
+                      )}
+                    >
+                      <i className="fas fa-key"> </i> {msg("password")}
+                    </li>
+                  </a>
+                )}
+                <a href={url.totpUrl}>
+                  <li
+                    className={clsx(
+                      "list-group-item",
+                      active === "totp" && "active"
+                    )}
+                  >
+                    <i className="fas fa-shield-alt"> </i>{" "}
+                    {msg("authenticator")}
+                  </li>
+                </a>
+                {features.identityFederation && (
+                  <a href={url.socialUrl}>
+                    <li
+                      className={clsx(
+                        "list-group-item",
+                        active === "social" && "active"
+                      )}
+                    >
+                      <i className="fas fa-users"> </i>{" "}
+                      {msg("federatedIdentity")}
+                    </li>
+                  </a>
+                )}
+                <a href={url.sessionsUrl}>
+                  <li
+                    className={clsx(
+                      "list-group-item",
+                      active === "sessions" && "active"
+                    )}
+                  >
+                    <i className="fas fa-clock"> </i> {msg("sessions")}
+                  </li>
+                </a>
+                <a href={url.applicationsUrl}>
+                  <li
+                    className={clsx(
+                      "list-group-item",
+                      active === "applications" && "active"
+                    )}
+                  >
+                    <i className="fas fa-th"> </i> {msg("applications")}
+                  </li>
+                </a>
+                {features.log && (
+                  <a href={url.logUrl}>
+                    <li
+                      className={clsx(
+                        "list-group-item",
+                        active === "log" && "active"
+                      )}
+                    >
+                      <i className="fas fa-file-alt"> </i> {msg("log")}
+                    </li>
+                  </a>
+                )}
+                {realm.userManagedAccessAllowed && features.authorization && (
+                  <a href={url.resourceUrl}>
+                    <li
+                      className={clsx(
+                        "list-group-item",
+                        active === "authorization" && "active"
+                      )}
+                    >
+                      <i className="fas fa-lock"> </i> {msg("myResources")}
+                    </li>
+                  </a>
+                )}
+              </ul>
             </div>
-        </>
-    );
+          </div>
+
+          <div className="col-md-9 content-area">
+            {message !== undefined && (
+              <div className={clsx("alert", `alert-${message.type}`)}>
+                {message.type === "success" && (
+                  <span className="pficon pficon-ok"></span>
+                )}
+                {message.type === "error" && (
+                  <span className="pficon pficon-error-circle-o"></span>
+                )}
+                <span className="kc-feedback-text">{message.summary}</span>
+              </div>
+            )}
+
+            {children}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

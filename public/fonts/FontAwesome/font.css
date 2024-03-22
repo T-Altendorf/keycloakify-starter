@@ -1,0 +1,7 @@
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  src: url("%BASE_URL%fonts/FontAwesome/fa-solid-900.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
